@@ -1,0 +1,53 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.log
+*.pot
+*.mo
+*.db
+*.sqlite3
+*.swp
+
+# === Virtualenv ===
+venv/
+ENV/
+env/
+.venv/
+
+# === Flask-related ===
+instance/
+*.db
+*.sqlite
+*.pkl           # modèles ou encodages facial
+*.bak
+*.cache
+*.tmp
+
+# === VSCode / PyCharm ===
+.vscode/
+.idea/
+
+# === System files ===
+.DS_Store
+Thumbs.db
+
+# === Node / Web frontend (si jamais utilisé un peu de JS avec npm) ===
+node_modules/
+dist/
+build/
+
+# === HTML/CSS ===
+# (rien à ignorer ici si tu écris ton CSS/JS toi-même dans /static)
+
+# === Tests / Coverage ===
+htmlcov/
+.coverage
+.tox/
+.nox/
+.cache/
+
+# === Flask-Migrate ===
+migrations/

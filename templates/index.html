@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="nav-links">
+    <a href="{{ url_for('persons.list_persons', page=1) }}" class="nav-item persons">
+        <div class="nav-icon">👤</div>
+        <div class="nav-title">Liste des Personnes</div>
+        <div class="nav-desc">Gérer les personnes enregistrées</div>
+    </a>
+    
+    <a href="{{ url_for('recognition.index') }}" class="nav-item recognition">
+        <div class="nav-icon">🔍</div>
+        <div class="nav-title">Reconnaissance</div>
+        <div class="nav-desc">Détection et identification faciale</div>
+    </a>
+</div>
+{% endblock %}
+

@@ -1,0 +1,213 @@
+{% extends "layout.html" %}
+
+{% block title %}
+| Capture Faciale
+{% endblock %}
+
+{% block extra_styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/capture.css') }}">
+{% endblock %}
+
+{% block content %}
+  <h2>📸 Capture faciale pour {{ name }}</h2>
+
+  <!-- Section images existantes -->
+  <div class="images-container">
+    {% if images %}
+        {% for img_url in images %}
+          <div class="image-card" data-filename="{{ img_url }}">
+            <img src="{{ url_for('persons.serve_person_image', filename=img_url) }}" alt="Image de {{ name }}" />
+            <form class="delete-form">
+              <input type="hidden" name="filename" value="{{ img_url }}">
+              <input type="hidden" name="name" value="{{ name }}">
+              <button type="submit" class="delete-btn">🗑 Sup</button>
+            </form>
+          </div>
+
+      {% endfor %}
+    {% endif %}
+    </div>
+
+  <div class="container">
+    
+  <!-- Section capture -->
+  <div class="capture-section">
+    <h3>🎥 Capturez une nouvelle image</h3>
+    <div id="status">Prêt à capturer de nouvelles images...</div>
+    <video id="video" width="500" height="375" autoplay></video>
+    <div style="text-align: center;">
+      <button id="captureBtn">📸 Capturer</button>
+    </div>
+    
+  </div>
+    
+  <canvas id="canvas" width="500" height="375"></canvas>
+    
+  <a href="{{ url_for('persons.list_persons') }}" class="back-link">⬅ Retour à la liste</a>
+
+  <script>
+    const name = "{{ name }}";
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const captureBtn = document.getElementById('captureBtn');
+    const statusDiv = document.getElementById('status');
+    
+    // Initialiser la webcam
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+        statusDiv.textContent = "Webcam activée - Prêt à capturer";
+      })
+      .catch(err => {
+        console.error('Erreur webcam:', err);
+        statusDiv.textContent = "⚠️ Impossible d'accéder à la webcam";
+        statusDiv.classList.add('error');
+        captureBtn.disabled = true;
+      });
+    
+    // 🗑 Gérer la suppression dynamique
+    document.addEventListener("submit", function (e) {
+      if (e.target.matches(".delete-form")) {
+        e.preventDefault();
+        
+        const form = e.target;
+        const formData = new FormData(form);
+        const imageCard = form.closest('.image-card');
+        
+        // Afficher l'état de chargement
+        const deleteBtn = form.querySelector('button');
+        const originalText = deleteBtn.innerHTML;
+        deleteBtn.innerHTML = '<div class="spinner"></div>';
+        deleteBtn.disabled = true;
+        
+        fetch("/persons/delete_image", {
+          method: "POST",
+          body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            // Supprimer le bloc image du DOM avec animation
+            imageCard.style.transform = 'scale(0)';
+            imageCard.style.opacity = '0';
+            setTimeout(() => imageCard.remove(), 300);
+            
+            statusDiv.textContent = "✅ " + data.message;
+            statusDiv.classList.add('success');
+            setTimeout(() => {
+              statusDiv.classList.remove('success');
+              statusDiv.textContent = "Prêt à capturer de nouvelles images...";
+            }, 3000);
+          } else {
+            statusDiv.textContent = "❌ " + data.message;
+            statusDiv.classList.add('error');
+            setTimeout(() => statusDiv.classList.remove('error'), 3000);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          statusDiv.textContent = "❌ Erreur lors de la suppression.";
+          statusDiv.classList.add('error');
+          setTimeout(() => statusDiv.classList.remove('error'), 3000);
+        })
+        .finally(() => {
+          deleteBtn.innerHTML = originalText;
+          deleteBtn.disabled = false;
+        });
+      }
+    });
+    
+    // Capture d'image
+    captureBtn.addEventListener('click', () => {
+      // Capture de l'image
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = canvas.toDataURL('image/jpeg');
+      
+      // Afficher l'état de chargement
+      const originalText = captureBtn.innerHTML;
+      captureBtn.innerHTML = '<div class="spinner"></div> Traitement...';
+      captureBtn.disabled = true;
+      statusDiv.textContent = "🔄 Traitement de l'image en cours...";
+      
+      // Envoyer l'image au serveur
+      fetch("/persons/capture_face", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name, image: imageData })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          statusDiv.textContent = "✅ " + data.message;
+          statusDiv.classList.add('success');
+          
+          // Créer la nouvelle carte d'image
+          const container = document.querySelector('.images-container');
+          const imageCard = document.createElement('div');
+          imageCard.className = 'image-card';
+          imageCard.setAttribute('data-filename', data.filename);
+          imageCard.innerHTML = `
+            <img src="/persons/images/${data.filename}" alt="Nouvelle image de ${name}" />
+            <form class="delete-form">
+              <input type="hidden" name="filename" value="${data.filename}">
+              <input type="hidden" name="name" value="${name}">
+              <button type="submit" class="delete-btn">🗑 Supprimer</button>
+            </form>
+          `;
+          
+          // Ajouter avec animation
+          imageCard.style.opacity = '0';
+          imageCard.style.transform = 'scale(0.5)';
+          container.appendChild(imageCard);
+          
+          setTimeout(() => {
+            imageCard.style.opacity = '1';
+            imageCard.style.transform = 'scale(1)';
+          }, 10);
+        } else {
+          statusDiv.textContent = "❌ " + data.message;
+          statusDiv.classList.add('error');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        statusDiv.textContent = "❌ Erreur lors de l'envoi.";
+        statusDiv.classList.add('error');
+      })
+      .finally(() => {
+        captureBtn.innerHTML = originalText;
+        captureBtn.disabled = false;
+        setTimeout(() => {
+          statusDiv.classList.remove('success', 'error');
+          if (statusDiv.classList.length === 0) {
+            statusDiv.textContent = "Prêt à capturer de nouvelles images...";
+          }
+        }, 3000);
+      });
+    });
+    
+    // Animation spinner
+    const style = document.createElement('style');
+    style.textContent = `
+      .spinner {
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s ease-in-out infinite;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 8px;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+        
+{% endblock %}
+  

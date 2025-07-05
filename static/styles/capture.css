@@ -1,0 +1,153 @@
+
+    h2 {
+        font-size: 2.2rem;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+    }
+    /* Section images existantes */
+    .gallery-title {
+        text-align: center;
+        margin: 30px 0 20px;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      
+      .images-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        margin: 20px 0 40px;
+      }
+      
+      .image-card {
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 15px;
+        box-shadow: var(--shadow);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: var(--transition);
+        width: 180px;
+      }
+      
+      .image-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+      
+      .image-card img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        background: rgba(0, 0, 0, 0.2);
+      }
+      
+      /* Formulaire et boutons */
+      .capture-section {
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 30px;
+        margin: 30px auto;
+        max-width: 600px;
+        box-shadow: var(--shadow);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      
+      #video {
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+        border-radius: 12px;
+        background: rgba(0, 0, 0, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        transform: scaleX(-1); /* Miroir pour le flux webcam */
+        margin: 0 auto 20px;
+      }
+      
+      button {
+        background: rgba(255, 255, 255, 0.15);
+        color: var(--light-color);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: var(--shadow);
+        margin: 10px;
+      }
+      
+      button:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-3px);
+      }
+      
+      #captureBtn {
+        background: rgba(29, 209, 161, 0.2);
+        font-size: 1.1rem;
+        padding: 15px 40px;
+      }
+      
+      .delete-btn {
+        background: rgba(255, 107, 107, 0.2) !important;
+        width: 100%;
+      }
+      
+      /* Statut */
+      #status {
+        margin: 20px 0;
+        padding: 15px;
+        border-radius: 12px;
+        background: rgba(0, 0, 0, 0.1);
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+      }
+      
+      #status.success {
+        background: rgba(29, 209, 161, 0.2);
+      }
+      
+      #status.error {
+        background: rgba(255, 107, 107, 0.2);
+      }
+      
+      /* Canvas caché */
+      #canvas {
+        display: none;
+      }
+      
+      /* Responsive */
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+        
+        h2 {
+          font-size: 1.8rem;
+        }
+        
+        .capture-section {
+          padding: 20px;
+        }
+        
+        #video {
+          max-width: 100%;
+        }
+    }

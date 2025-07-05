@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block title %}
+| Reconnaissance Faciale
+{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/recognition.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="controls">
+        <button id="toggleBtn">📹 Activer la Webcam</button>
+    </div>
+    <h2>📷 Identifiez-vous via la caméra</h2>
+
+    <div class="main-content">
+        <div class="video-section">
+            <div class="video-container">
+                <video id="video" width="640" height="480" autoplay></video>
+            </div>
+            
+            <div class="controls">
+                <button id="snap">📤 Identifier</button>
+            </div>
+            
+            <div class="status">
+                <div class="status-indicator"></div>
+                <span>Caméra désactivée</span>
+            </div>
+            
+            <div class="message">
+                Activez la webcam et cliquez sur "Identifier" pour démarrer la reconnaissance
+            </div>
+        </div>
+        
+        <div class="results-section">
+            <p id="result">En attente d'identification...</p>
+            <img id="preview" />
+            <div id="resultsContainer"></div>
+        </div>
+    </div>
+    
+    <canvas id="canvas" width="640" height="480"></canvas>
+
+    <a href="/" class="back-link">⬅ Retour à l'accueil</a>
+
+    <script src="{{ url_for('static', filename='js/recognition.js') }}"></script>
+
+
+{% endblock %}

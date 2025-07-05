@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+
+{% block title %}
+| Gestion des personnes
+{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/persons.css') }}">
+{% endblock %}
+
+
+
+{% block content %}
+<h1>👥 Gestion des personnes</h1>
+
+<!-- Formulaire de recherche -->
+<div class="card">
+  <form method="get" action="{{ url_for('persons.list_persons') }}">
+    <input type="text" name="search" placeholder="Rechercher un nom..." value="{{ request.args.get('search', '') }}">
+    <button type="submit">🔍 Rechercher</button>
+  </form>
+</div>
+
+<!-- Formulaire d'ajout -->
+<div class="card">
+  <form method="POST" action="/persons/add_person">
+    <input type="text" name="name" placeholder="Nom de la personne" required />
+    <button type="submit">➕ Ajouter une personne</button>
+  </form>
+</div>
+
+<!-- Encode les visages -->
+<div class="card">
+  <div class="h-flex">
+    <button id="encodeBtn">🔐 Encoder les {{ total_count }} personnes</button>
+    <div id="status" align="left"></div>
+</div>
+</div>
+
+<!-- Liste des personnes -->
+<ul>
+  {% for person in paginated_persons %}
+  <li>
+    <div class="person-info">
+      <div class="person-name">
+        <a href="{{ url_for('persons.capture_page', name=person.name) }}">{{ person.name }}</a>
+      </div>
+      <div class="image-count">{{ person.image_count }} image{{ 's' if person.image_count > 1 else '' }}</div>
+    </div>
+    <form method="POST" action="/persons/delete_person">
+      <input type="hidden" name="name" value="{{ person.name }}">
+      <button type="submit" class="delete-btn">🗑 Supprimer</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+
+<!-- Pagination -->
+{% if total_pages > 1 %}
+<div class="pagination">
+  {% for page_num in range(1, total_pages + 1) %}
+    <a href="{{ url_for('persons.list_persons', page=page_num, search=request.args.get('search', '')) }}" class="{% if page_num == current_page %}active{% endif %}">
+      {{ page_num }}
+    </a>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- Bouton retour -->
+<a href="/" class="back-link">⬅ Retour à l'accueil</a>
+
+<script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/persons.js') }}"></script>
+{% endblock %}
+
+

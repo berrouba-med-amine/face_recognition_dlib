@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> BLIB Face {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+    {% block extra_styles %}{% endblock %}
+</head>
+<body>
+    <!-- Animation de fond -->
+    <ul class="circles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+    
+    <!-- Contenu principal -->
+    <div class="container">
+        <header>
+            <div class="logo"></div>
+            <h1>Reconnaissance Faciale</h1>
+            <p class="subtitle">Système de reconnaissance faciale et gestion des personnes</p>
+        </header>
+        
+        {% block content %}
+        <!-- Le contenu des pages ira ici -->
+        {% endblock %}
+
+        <footer>
+            &copy; 2025 Système de Reconnaissance Faciale
+        </footer>
+    </div>
+</body>
+</html>
