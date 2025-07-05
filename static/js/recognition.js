@@ -18,7 +18,6 @@ const elements = {
   video: document.getElementById("video"),
   canvas: document.getElementById("canvas"),
   snap: document.getElementById("snap"),
-  result: document.getElementById("result"),
   preview: document.getElementById("preview"),
   status: document.querySelector(".status"),
   statusIndicator: document.querySelector(".status-indicator"),
@@ -34,7 +33,7 @@ const state = {
 
 // 🎬 Initialisation
 function init() {
-  const hiddenElements = [elements.snap, elements.video, elements.preview, elements.resultsContainer];
+  const hiddenElements = [elements.snap, elements.video, elements.preview];
   hiddenElements.forEach(el => setDisplay(el, false));
   
   // Event listeners
@@ -55,8 +54,8 @@ function updateUI(isActive) {
   
   elementsToShow.forEach(el => setDisplay(el, isActive));
   setDisplay(elements.preview, isActive);
+  setDisplay(elements.resultsContainer, isActive);
   
-  elements.result.innerText = isActive ? config.messages.waiting : "En attente d'identification...";
   elements.toggleBtn.textContent = isActive ? config.messages.disable : config.messages.enable;
   
   // Mise à jour de l'état de la caméra
@@ -144,7 +143,7 @@ function displayResults(data) {
       `).join('')}
     `;
   } else {
-    elements.result.innerText = config.messages.error + (data.error || "Aucun résultat");
+    elements.resultsContainer.innerHTML = config.messages.error + (data.error || "Aucun résultat");
   }
 }
 
@@ -156,7 +155,6 @@ async function captureAndIdentify() {
     // Désactiver temporairement les boutons
     elements.snap.disabled = true;
     elements.toggleBtn.disabled = true;
-    elements.result.innerText = "🔄 Analyse en cours...";
     
     // Afficher un spinner
     elements.resultsContainer.innerHTML = '<div class="spinner"></div>';
@@ -171,7 +169,7 @@ async function captureAndIdentify() {
     
   } catch (err) {
     console.error('Identification error:', err);
-    elements.result.innerText = config.messages.networkError;
+    elements.resultsContainer.innerHTML = config.messages.networkError;
   } finally {
     // Réactiver les boutons
     state.processing = false;

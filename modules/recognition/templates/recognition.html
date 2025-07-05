@@ -9,10 +9,15 @@
 {% endblock %}
 
 {% block content %}
+    <h2>📷 Identifiez-vous via la caméra</h2>
+
     <div class="controls">
         <button id="toggleBtn">📹 Activer la Webcam</button>
     </div>
-    <h2>📷 Identifiez-vous via la caméra</h2>
+
+    <div class="message">
+        Activez la webcam et cliquez sur "Identifier" pour démarrer la reconnaissance
+    </div>
 
     <div class="main-content">
         <div class="video-section">
@@ -28,14 +33,9 @@
                 <div class="status-indicator"></div>
                 <span>Caméra désactivée</span>
             </div>
-            
-            <div class="message">
-                Activez la webcam et cliquez sur "Identifier" pour démarrer la reconnaissance
-            </div>
         </div>
         
         <div class="results-section">
-            <p id="result">En attente d'identification...</p>
             <img id="preview" />
             <div id="resultsContainer"></div>
         </div>

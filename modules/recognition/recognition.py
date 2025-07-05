@@ -54,7 +54,7 @@ def identify():
 
             # Dessiner rectangle + label
             cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 2)
-            cv2.putText(image, label, (left, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+            cv2.putText(image, label, (left, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
 
             results.append({"name": name, "confidence": round(confidence, 2)})
 
